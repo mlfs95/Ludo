@@ -3,36 +3,69 @@ import java.io.PrintStream;
 import java.net.*;
 import java.util.Scanner;
 
-public class Client implements Runnable {
+public class Client{
 
 	public static void main(String[] args) throws IOException {
-		Socket cli = new Socket("127.0.0.1", 12345); 
-		System.out.println("O cliente se conectou ao servidor!");
+		Scanner input = new Scanner(System.in);
+		Socket client = new Socket("localhost", 12345); 
 		
-		Client nclient = new Client();
-		Thread client_thread = new Thread(nclient);
-		client_thread.start();
-		
-		Scanner teclado = new Scanner(System.in);
-		PrintStream saida = new PrintStream(cli.getOutputStream());
-		String msg = teclado.nextLine(); 
+		if (client.isConnected()){
+			System.out.println("Conectado ao servidor com sucesso");
+			
+			// Ouvir do servidor
+			threadMessages(client);
+			
+			PrintStream output = new PrintStream(client.getOutputStream());
+			String msg = input.nextLine(); 
 
-		while (msg.compareTo("###")!=0) {
-			saida.println(msg);
-			msg = teclado.nextLine();
+			// Enquanto não recebe a string "###" o chat continua
+			while (msg.compareTo("###") != 0) {
+				output.println(msg);
+				msg = input.nextLine();
+			}
+			
+			// Ao receber a string, o chat termina
+			output.close();
+			input.close();
+			client.close();
+			System.out.println("O cliente terminou de executar!");
+			
+		} else {
+			
+			System.out.println("Não se conectou com o servidor");
+			input.close();
+			client.close();
 		}
 		
-		saida.close();
-		teclado.close();
-		cli.close();
-		System.out.println("O cliente terminou de executar!");
-
-	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
 		
 	}
-
+	
+	static void threadMessages(Socket client) {
+		
+		// Se conectou, cria uma thread para ouvir do servidor
+		Thread messageThread = new Thread() {
+					
+			@Override
+			public void run() {
+							
+				try{
+					Scanner message = new Scanner(client.getInputStream());
+			        
+					while (message.hasNextLine()) {
+						System.out.println(message.nextLine());
+					}
+				} catch(Exception e) { 
+					System.out.println("Erro ao ouvir servidor, desconectando");
+					e.printStackTrace();
+					try {
+						client.close();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}	
+			}					
+		};
+		
+		messageThread.start();
+	}
 }
