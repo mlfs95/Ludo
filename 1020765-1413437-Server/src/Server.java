@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.*;
 import java.util.Scanner;
 
@@ -36,10 +37,12 @@ public class Server{
 				while (serverIsRunning){
 					
 					try {
-						if (numberOfClients < 4){
+						if (numberOfClients <= 4){
+							
+							Socket newClient = server.accept();
+							clients[numberOfClients] = newClient;
 							numberOfClients += 1;
 							int id = numberOfClients;
-							Socket newClient = server.accept();
 							System.out.println("Nova conexão com o cliente " + newClient.getInetAddress().getHostAddress());
 							
 							threadListenNewClient(newClient, id);
@@ -71,11 +74,14 @@ public class Server{
 						
 						while (scanner.hasNextLine()) { 
 							String message = scanner.nextLine();
+							
 							if (message.equals("###")){
-								
+								// terminar conexão
+							} else {
+								System.out.println("Mensagem recebida enviando a todos");
+								sendsAllClientsMessage(message, newClient, id);
 							}
 							
-							System.out.println("Cliente " + id + " enviou: " + message);
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -85,5 +91,23 @@ public class Server{
 		};
 		
 		listenClient.start();
+	}
+	
+	static void sendsAllClientsMessage(String message, Socket sender, int id) {
+		
+		for (int i=0; i<numberOfClients; i++) {
+			
+			if (!sender.equals(clients[i])) {
+				
+				try {
+					PrintStream output = new PrintStream(clients[i].getOutputStream());
+					String fullMessage = "Cliente "+ id + " enviou: " + message;
+					output.println(fullMessage);
+				} catch (IOException e) {
+					System.out.println("erro ao pegar outputStream");
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }
