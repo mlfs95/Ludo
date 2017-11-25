@@ -58,7 +58,7 @@ public class Server{
 		acceptClients.run();
 	}
 	
-	static void threadListenNewClient(Socket newClient, int id){
+	static void threadListenNewClient(Socket newClient, int id) {
 		
 		Thread listenClient = new Thread(){
 			
