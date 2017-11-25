@@ -69,12 +69,12 @@ public class Client{
 	
 	static void threadMessages(Socket server) {
 		
-		
+		// Variável para ouvir do servidor
 		Scanner scanner;
 		try {
 			scanner = new Scanner(server.getInputStream());
 		} catch (IOException e2) {
-			// TODO Auto-generated catch block
+			System.out.println("impossivel ouvir servidor");
 			e2.printStackTrace();
 			return;
 		}
@@ -86,13 +86,24 @@ public class Client{
 			public void run() {
 							
 				try{
+					// Enquanto tiver algo para ouvir
 					while (scanner.hasNextLine()) {
+						
+						// Salva a mensagem escutada pelo socket
 						String msg = scanner.nextLine();
+						
+						// Se o servidor aprovar o nome
 						if (msg.compareTo("Valid Nickname") == 0) {
+							
+							// Diz que tem um nickname
 							hasNickname = true;
 							System.out.println("Nome configurado corretamente");
+							
+						// Se já houver um nome como o que o cliente enviou espera outro resposta do servidor para um novo nome
 						} else if (msg.compareTo("Invalid Nickname") == 0) {
-							System.out.println("Nome já existente");
+							System.out.println("Nome já existente, digite outro:");
+							
+						// Se não, é uma mensagem
 						} else {
 							System.out.println(msg);
 						}
