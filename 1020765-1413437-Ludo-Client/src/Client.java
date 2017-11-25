@@ -9,44 +9,62 @@ public class Client{
 
 	private static boolean hasNickname = false;
 	
-	public static void main(String[] args) throws IOException {
-		Socket server = new Socket("localhost", 12345); 
+	public static void main(String[] args) {
+		// Se conecta com o servidor passando o ip e porta
+		Socket server;
+		try {
+			server = new Socket("localhost", 12345);
+		} catch (IOException e) {
+			System.out.println("Não foi possivel se conectar em 'localhost' e porta 12345");
+			return;
+		} 
+		// Variavel para pegar coisas escritas 
 		Scanner input = new Scanner(System.in);
 		
+		// Se conectou corretamente
 		if (server.isConnected()) {
+			// Pede um nome do cliente
 			System.out.println("Escolha um nome:");
 			
-			// Ouvir do servidor
+			// Chama a função para ouvir o servidor
 			threadMessages(server);
 			
-			PrintStream output = new PrintStream(server.getOutputStream());
+			// Varíavel para enviar mensagens no socket 
+			PrintStream output;
+			try {
+				output = new PrintStream(server.getOutputStream());
+			} catch (IOException e) {
+				System.out.println("Não foi possivel escrever no socket");
+				return;
+			}
+			// ultima mensagem enviada
 			String msg = input.nextLine();
 			
 			// Enquanto não recebe a string "###" o chat continua
 			while (msg.compareTo("###") != 0) {
+				
+				// Se nao tiver setado um nickname ou não tiver sido aceito ele envia um nickname no próximo envio
 				if (!hasNickname) {
 					output.println("Nickname " + msg);
-				} else {
+				} else { // Se não ele considera o string enviado uma mensagem
 					output.println("Message " + msg);
 				}
-			
+				
+				//Pega a próxima coisa escrita
 				msg = input.nextLine();
 			}
-			
-//			// Ao receber a string, o chat termina
-			output.close();
-			input.close();
-			server.close();
+
 			System.out.println("O cliente terminou de executar!");
 			
-		} else {
-			
-			System.out.println("Não se conectou com o servidor");
-//			input.close();
-			server.close();
+			// Ao receber a string "###", o chat termina e fecha os sockets
+			output.close();
+			input.close();
+			try {
+				server.close();
+			} catch (IOException e) {
+				System.out.println("Impossível fechar socket");
+			}
 		}
-		
-		
 	}
 	
 	static void threadMessages(Socket server) {
