@@ -7,9 +7,19 @@ import java.util.Scanner;
 
 public class Client{
 
+	// Instância do singleton
+	private static Client instance = null;
+	
 	private static boolean hasNickname = false;
 	
-	public static void main(String[] args) {
+	public static Client getInstance(){
+		if(instance == null){
+			instance = new Client();
+		}
+		return instance;
+	}
+	
+	public void startClient() {
 		// Se conecta com o servidor passando o ip e porta
 		Socket server;
 		try {
@@ -84,7 +94,7 @@ public class Client{
 					
 			@Override
 			public void run() {
-							
+				
 				try{
 					// Enquanto tiver algo para ouvir
 					while (scanner.hasNextLine()) {
