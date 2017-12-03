@@ -2,13 +2,15 @@
 public class main {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		
+		ClientFrame screen = ClientFrame.getInstance();
+		screen.setSize(300,300);
+		screen.setVisible(true);
 
 		Client client = Client.getInstance();
 		
 		client.startClient();
-		
-		return;
+	
 	}
 
 }
