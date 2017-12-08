@@ -100,6 +100,8 @@ public class Server{
 							// Pega a próxima mensagem
 							String message = scanner.nextLine();
 							
+							System.out.println("recebi: " + message);
+							
 							// Se for "###" termina a conexão
 							if (message.equals("###")){
 								// terminar conexão
@@ -115,14 +117,19 @@ public class Server{
 								
 								if (lobby.addPlayer(nickname, newClient)) {
 									output.println("Valid Nickname");
-									output.println("Bem-vindo " + nickname);
+									
+									if (lobby.getIsFull()) {
+										System.out.println("Começando o jogo");
+										lobby.sendToAllPlayers(nickname, "Game Start");
+										output.println("Game Start");
+									}
 								} else {
 									// Envia mensagem de nickname inválido
 									output.println("Invalid Nickname");
 								}
 							
-							// Se a mensagem começa com a String "Message "
-							} else if (message.startsWith("Message ")) {
+							// Então ;e uma mensagem que deve ser repassada para todos os outros
+							} else {
 								// Chama a função para enviar para todos os clientes
 								lobby.sendToAllPlayers(nickname, message);
 							}

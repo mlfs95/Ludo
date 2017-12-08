@@ -47,7 +47,7 @@ public class Lobby {
 	}
 	
 	public void sendToAllPlayers(String nickname, String message) {
-		
+
 		for(int i = 0; i < numberOfPlayers; i++) {
 			if(players[i].getNickname().compareTo(nickname) != 0) {
 				try {
@@ -55,7 +55,7 @@ public class Lobby {
 					// Cria a variável para escrever para p cliente atual
 					PrintStream output = new PrintStream(players[i].getSocket().getOutputStream());
 					// Cria a mensagem completa
-					String fullMessage = nickname + " enviou: '" + message + "'";
+					String fullMessage = message;
 					// Envia a mensagem completa
 					output.println(fullMessage);
 				} catch (IOException e) {

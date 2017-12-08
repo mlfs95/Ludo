@@ -2,7 +2,10 @@ package interfacejogo;
 import java.awt.*;
 import javax.swing.*;
 
-public class BoardFrame extends JFrame {
+import Client.ObserverGame;
+import Client.Client;
+
+public class BoardFrame extends JFrame implements ObserverGame {
 	private static final long serialVersionUID = 1L;
 
 	private int altura;
@@ -12,6 +15,10 @@ public class BoardFrame extends JFrame {
 	public ButtonsPanel buttonsPanel;
 	
 	public BoardFrame(){
+		
+		// adicionando na lista de observados
+		Client.getInstance().addObserver(this);
+		
 		SetPanelTabuleiro();
 		SetPanelBotoes();
 		SetConfigurations();
@@ -34,6 +41,10 @@ public class BoardFrame extends JFrame {
 		SetTitleAndSize();
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
+		
+		// Enviando para todos menos a mim mesmo algo
+		System.out.println("Enviando a todos que comecei o jogo");
+		Client.getInstance().sendMessage("Iniciei o jogo");
 	}
 	
 	private void SetDefautSizes(){
@@ -54,6 +65,11 @@ public class BoardFrame extends JFrame {
 		this.setSize(largura, altura);
 		this.setTitle("Ludo");
 		this.setResizable(false);
+	}
+
+	@Override
+	public void receivedPlay(String play) {
+		System.out.println("Recebeu uma jogada de alguem: " + play);
 	}
 	
 }

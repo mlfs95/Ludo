@@ -1,3 +1,4 @@
+package Client;
 import interfacejogo.BoardFrame;
 
 public class ClientConnection {
