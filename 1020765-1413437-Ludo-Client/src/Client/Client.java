@@ -126,7 +126,7 @@ public class Client implements ObservableLobby, ObservableGame {
 							}
 							
 						
-						} else if (msg.compareTo("Game Start") == 0) {
+						} else if (msg.contains("Game Start")) {
 							System.out.println("Começando o jogo!");
 							
 							while(li.hasNext()){

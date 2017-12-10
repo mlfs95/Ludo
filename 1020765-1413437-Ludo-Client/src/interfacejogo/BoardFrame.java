@@ -43,8 +43,8 @@ public class BoardFrame extends JFrame implements ObserverGame {
 		this.setVisible(true);
 		
 		// Enviando para todos menos a mim mesmo algo
-		System.out.println("Enviando a todos que comecei o jogo");
-		Client.getInstance().sendMessage("Iniciei o jogo");
+//		System.out.println("Enviando a todos que comecei o jogo");
+//		Client.getInstance().sendMessage("Iniciei o jogo");
 	}
 	
 	private void SetDefautSizes(){

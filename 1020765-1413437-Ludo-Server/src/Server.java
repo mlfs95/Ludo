@@ -120,8 +120,7 @@ public class Server{
 									
 									if (lobby.getIsFull()) {
 										System.out.println("Começando o jogo");
-										lobby.sendToAllPlayers(nickname, "Game Start");
-										output.println("Game Start");
+										lobby.startGame();
 									}
 								} else {
 									// Envia mensagem de nickname inválido
